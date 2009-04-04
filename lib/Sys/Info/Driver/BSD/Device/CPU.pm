@@ -8,7 +8,7 @@ use Carp qw( croak );
 use Sys::Info::Constants qw( LIN_MACHINE );
 use Sys::Info::Driver::BSD;
 
-$VERSION = '0.69_07';
+$VERSION = '0.69_10';
 
 sub identify {
     my $self = shift;
@@ -59,6 +59,9 @@ sub load {
     return $loads->[$level];
 }
 
+sub bitness {
+    my $self = shift;
+}
 
 1;
 
@@ -86,6 +89,10 @@ See identify in L<Sys::Info::Device::CPU>.
 
 See load in L<Sys::Info::Device::CPU>.
 
+=head2 bitness
+
+See bitness in L<Sys::Info::Device::CPU>.
+
 =head1 SEE ALSO
 
 L<Sys::Info>,
@@ -103,7 +110,7 @@ Copyright 2009 Burak Gürsoy. All rights reserved.
 =head1 LICENSE
 
 This library is free software; you can redistribute it and/or modify 
-it under the same terms as Perl itself, either Perl version 5.8.8 or, 
+it under the same terms as Perl itself, either Perl version 5.10.0 or, 
 at your option, any later version of Perl 5 you may have available.
 
 =cut
