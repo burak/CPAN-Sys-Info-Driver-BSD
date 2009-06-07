@@ -5,7 +5,6 @@ use base qw(Sys::Info::Base);
 use Unix::Processors;
 use POSIX ();
 use Carp qw( croak );
-use Sys::Info::Constants qw( LIN_MACHINE );
 use Sys::Info::Driver::BSD;
 
 $VERSION = '0.70';
@@ -15,7 +14,7 @@ sub identify {
 
     if ( ! $self->{META_DATA} ) {
         my $up   = Unix::Processors->new;
-        my $mach = (POSIX::uname)[LIN_MACHINE] || fsysctl('hw.machine_arch'); # hw.machine?
+        my $mach = $self->uname->{machine} || fsysctl('hw.machine_arch'); # hw.machine?
         my $arch = $mach =~ m{ i [0-9] 86 }xmsi ? 'x86'
                  : $mach =~ m{ ia64       }xmsi ? 'IA64'
                  : $mach =~ m{ x86_64     }xmsi ? 'AMD-64'
@@ -61,6 +60,7 @@ sub load {
 
 sub bitness {
     my $self = shift;
+    return;
 }
 
 1;

@@ -6,8 +6,6 @@ use POSIX ();
 use Cwd;
 use Carp qw( croak );
 use Sys::Info::Driver::BSD;
-use Sys::Info::Constants qw( :linux );
-use Sys::Info::Driver::BSD;
 
 $VERSION = '0.70';
 
@@ -110,7 +108,7 @@ sub login_name {
     return $rv;
 }
 
-sub node_name { (POSIX::uname())[LIN_NODENAME] }
+sub node_name { shift->uname->{nodename} }
 
 sub domain_name { }
 

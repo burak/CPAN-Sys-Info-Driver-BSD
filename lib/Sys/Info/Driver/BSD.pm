@@ -5,7 +5,7 @@ use BSD::Sysctl qw( sysctl sysctl_exists );
 use Exporter ();
 use Carp qw( croak );
 
-$VERSION = '0.72';
+$VERSION = '0.73';
 @ISA     = qw( Exporter );
 @EXPORT  = qw( fsysctl nsysctl );
 
