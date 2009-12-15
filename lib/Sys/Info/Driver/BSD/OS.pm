@@ -1,5 +1,6 @@
 package Sys::Info::Driver::BSD::OS;
 use strict;
+use warnings;
 use vars qw( $VERSION );
 use base qw( Sys::Info::Base );
 use POSIX ();
@@ -23,12 +24,12 @@ sub logon_server {}
 
 sub edition {
     my $self = shift->_populate_osversion;
-    $OSVERSION{RAW}->{EDITION};
+    return $OSVERSION{RAW}->{EDITION};
 }
 
 sub tz {
     my $self = shift;
-    return POSIX::strftime("%Z", localtime);
+    return POSIX::strftime('%Z', localtime);
 }
 
 sub meta {
@@ -63,7 +64,7 @@ sub meta {
 
     $info{system_manufacturer}       = undef;
     $info{system_model}              = undef;
-    $info{system_type}               = sprintf "%s based Computer", $arch;
+    $info{system_type}               = sprintf '%s based Computer', $arch;
 
     $info{page_file_path}            = undef;
 
@@ -76,8 +77,9 @@ sub tick_count {
 }
 
 sub name {
-    my $self = shift->_populate_osversion;
-    my %opt  = @_ % 2 ? () : (@_);
+    my($self, @args) = @_;
+    $self->_populate_osversion;
+    my %opt  = @args % 2 ? () : @args;
     my $id   = $opt{long} ? ($opt{edition} ? 'LONGNAME_EDITION' : 'LONGNAME')
              :              ($opt{edition} ? 'NAME_EDITION'     : 'NAME'    )
              ;
@@ -95,32 +97,31 @@ sub is_root {
     my $id   = POSIX::geteuid();
     my $gid  = POSIX::getegid();
     return 0 if $@;
-    return 0 if ! defined($id) || ! defined($gid);
+    return 0 if ! defined $id || ! defined $gid;
     return $id == 0 && $gid == 0; # && $name eq 'root'; # $name is never root!
 }
 
 sub login_name {
-    my $self  = shift;
-    my %opt   = @_ % 2 ? () : (@_);
+    my($self, @args) = @_;
+    my %opt   = @args % 2 ? () : @args;
     my $login = POSIX::getlogin() || return;
     my $rv    = eval { $opt{real} ? (getpwnam $login)[LIN_REAL_NAME_FIELD] : $login };
     $rv =~ s{ [,]{3,} \z }{}xms if $opt{real};
     return $rv;
 }
 
-sub node_name { shift->uname->{nodename} }
+sub node_name { return shift->uname->{nodename} }
 
 sub domain_name { }
 
 sub fs {
     my $self = shift;
-    return(
-        unimplemented => 1,
-    );
+    return unimplemented => 1;
 }
 
 sub bitness {
     my $self = shift;
+    return;
 }
 
 # ------------------------[ P R I V A T E ]------------------------ #
@@ -131,6 +132,7 @@ sub _file_has_substr {
     my $str  = shift;
     return if ! -e $file || ! -f _;
     my $raw = $self->slurp( $file ) =~ m{$str}xms;
+    return $raw;
 }
 
 sub _probe_edition {
@@ -156,7 +158,7 @@ sub _populate_osversion {
     require POSIX;
     my($sysname, $nodename, $release, $version, $machine) = POSIX::uname();
 
-    my(undef, $raw)  = split m{[#]}, $version;
+    my(undef, $raw)  = split m{\#}xms, $version;
     my($date, undef) = split m{ \s+ \S+ \z }xms, $raw;
     my $build_date = $date ? $self->date2time( $date ) : undef;
     my $build      = $date;
@@ -167,8 +169,8 @@ sub _populate_osversion {
     %OSVERSION = (
         NAME             => $sysname,
         NAME_EDITION     => $edition ? "$sysname ($edition)" : $sysname,
-        LONGNAME         => '', # will be set below
-        LONGNAME_EDITION => '', # will be set below
+        LONGNAME         => q{}, # will be set below
+        LONGNAME_EDITION => q{}, # will be set below
         VERSION  => $release,
         KERNEL   => undef,
         RAW      => {
@@ -178,10 +180,10 @@ sub _populate_osversion {
                     },
     );
 
-    $OSVERSION{LONGNAME}         = sprintf "%s %s (kernel: %s)",
+    $OSVERSION{LONGNAME}         = sprintf '%s %s (kernel: %s)',
                                    @OSVERSION{ qw/ NAME         VERSION / },
                                    $kernel;
-    $OSVERSION{LONGNAME_EDITION} = sprintf "%s %s (kernel: %s)",
+    $OSVERSION{LONGNAME_EDITION} = sprintf '%s %s (kernel: %s)',
                                    @OSVERSION{ qw/ NAME_EDITION VERSION / },
                                    $kernel;
     return;
@@ -242,19 +244,5 @@ Please see L<Sys::Info::OS> for definitions of these methods and more.
 L<Sys::Info>, L<Sys::Info::OS>,
 The C</proc> virtual filesystem:
 L<http://www.redhat.com/docs/manuals/linux/RHL-9-Manual/ref-guide/s1-proc-topfiles.html>.
-
-=head1 AUTHOR
-
-Burak Gürsoy, E<lt>burakE<64>cpan.orgE<gt>
-
-=head1 COPYRIGHT
-
-Copyright 2006-2009 Burak Gürsoy. All rights reserved.
-
-=head1 LICENSE
-
-This library is free software; you can redistribute it and/or modify 
-it under the same terms as Perl itself, either Perl version 5.10.0 or, 
-at your option, any later version of Perl 5 you may have available.
 
 =cut
