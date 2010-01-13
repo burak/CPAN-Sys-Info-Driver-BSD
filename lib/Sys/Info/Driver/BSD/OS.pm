@@ -6,6 +6,7 @@ use base qw( Sys::Info::Base );
 use POSIX ();
 use Cwd;
 use Carp qw( croak );
+use Sys::Info::Constants qw( LIN_REAL_NAME_FIELD );
 use Sys::Info::Driver::BSD;
 
 $VERSION = '0.70';
