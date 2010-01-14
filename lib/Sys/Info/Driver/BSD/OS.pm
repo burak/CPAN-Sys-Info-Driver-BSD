@@ -40,10 +40,22 @@ sub meta {
     require POSIX;
     require Sys::Info::Device;
 
-    my $cpu     = Sys::Info::Device->new('CPU');
-    my $arch    = ($cpu->identify)[0]->{architecture};
-    my $physmem = fsysctl('hw.physmem');
-    my $usermem = fsysctl('hw.usermem');
+    my $cpu       = Sys::Info::Device->new('CPU');
+    my $arch      = ($cpu->identify)[0]->{architecture};
+    my $physmem   = fsysctl('hw.physmem');
+    my $usermem   = fsysctl('hw.usermem');
+    my $swap_call = $^O eq 'openbsd' ? '/sbin/swapctl -l' : '/usr/sbin/swapinfo';
+    my $swap_buf  = qx($swap_call 2>&1);
+    my %swap;
+    if ( $swap_buf ) {
+        foreach my $line ( split m{\n}xms, $swap_buf ) {
+            chomp $line;
+            next if $line =~ m{ \A Device }xms;
+            @swap{ qw/ path size used / } = split m{\s+}xms, $line;
+            last;
+        }
+    }
+
     my %info;
 
     $info{manufacturer}              = $MANUFACTURER->{ $^O };
@@ -56,8 +68,8 @@ sub meta {
 
     $info{physical_memory_total}     = $physmem;
     $info{physical_memory_available} = $physmem - $usermem;
-    $info{page_file_total}           = fsysctl('hw.pagesize');
-    $info{page_file_available}       = undef;
+    $info{page_file_total}           = $swap{size};
+    $info{page_file_available}       = $swap{size} - $swap{used};
 
     # windows specific
     $info{windows_dir}               = undef;
@@ -67,7 +79,7 @@ sub meta {
     $info{system_model}              = undef;
     $info{system_type}               = sprintf '%s based Computer', $arch;
 
-    $info{page_file_path}            = undef;
+    $info{page_file_path}            = $swap{path};
 
     return %info;
 }

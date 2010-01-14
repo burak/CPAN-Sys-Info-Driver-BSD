@@ -7,6 +7,7 @@ Time zone is GMT+2.
     => Perl::Critic refactoring.
     => Implemented CPU->bitness.
     => CPU Flags detection.
+    => Swap file detection.
 
 0.72 Sun May  3 03:30:41 2009
     => Update builder.
