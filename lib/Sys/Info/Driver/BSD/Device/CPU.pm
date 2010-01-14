@@ -25,9 +25,18 @@ sub identify {
         $name =~ s{\s+}{ }xms;
         my $byteorder = nsysctl('hw.byteorder');
         my @flags;
-        push @flags, 'fpu' if nsysctl('hw.floatingpoint');
+        push @flags, 'FPU' if nsysctl('hw.floatingpoint');
 
         $self->{META_DATA} = [];
+
+        my %d = dmesg();
+        if ( $d{CPU} ) {
+            my %cpu = %{ $d{CPU} };
+            for my $slot ( @cpu{ qw/ flags AMD_flags / } ) {
+                next if ! $slot;
+                push @flags, @{ $slot };
+            }
+        }
 
         push @{ $self->{META_DATA} }, {
             architecture                 => $arch,
@@ -61,7 +70,14 @@ sub load {
 
 sub bitness {
     my $self = shift;
-    return;
+    my %i    = dmesg();
+    my $cpu  = $i{CPU} || return;
+    my %flags;
+    foreach my $slot ( $cpu->{flags}, $cpu->{AMD_flags} ) {
+        next if ! $slot;
+        $flags{ $_ } = 1 for @{ $slot };
+    }
+    return $flags{LM} ? '64' : '32';
 }
 
 1;
