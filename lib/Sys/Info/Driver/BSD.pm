@@ -6,7 +6,7 @@ use BSD::Sysctl qw( sysctl sysctl_exists );
 use base qw( Exporter   Sys::Info::Base );
 use Carp qw( croak );
 
-$VERSION = '0.73';
+$VERSION = '0.78';
 @EXPORT  = qw( fsysctl nsysctl dmesg );
 
 sub fsysctl {
