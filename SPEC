@@ -8,7 +8,6 @@ die "OS unsupported\n" if ! $OK;
         'BSD::Sysctl'      => '0.08',
         'Unix::Processors' => 0,
         'Sys::Info::Base'  => '0.7801',
-        ($] < 5.006 ? ( 'warnings::compat' => 0 ) : ()),
     },
     build_requires => {
         'Test::Sys::Info'  => '0.20',
@@ -17,5 +16,10 @@ die "OS unsupported\n" if ! $OK;
         resources => {
             repository => 'http://bitbucket.org/burak/cpan-sys-info-driver-bsd/',
         },
+    },
+    BUILDER => {
+        change_versions                  => 1,
+        copyright_first_year             => 2009,
+        add_pod_author_copyright_license => 1,
     },
 }
