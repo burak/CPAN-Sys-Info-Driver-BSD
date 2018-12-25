@@ -1,14 +1,13 @@
 package Sys::Info::Driver::BSD::Device::CPU;
+
 use strict;
 use warnings;
-use vars qw($VERSION);
 use base qw(Sys::Info::Base);
+
 use Unix::Processors;
 use POSIX ();
 use Carp qw( croak );
 use Sys::Info::Driver::BSD;
-
-$VERSION = '0.70';
 
 sub identify {
     my $self = shift;

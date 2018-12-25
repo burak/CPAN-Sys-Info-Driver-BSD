@@ -1,15 +1,14 @@
 package Sys::Info::Driver::BSD::OS;
+
 use strict;
 use warnings;
-use vars qw( $VERSION );
 use base qw( Sys::Info::Base );
+
 use POSIX ();
 use Cwd;
 use Carp qw( croak );
 use Sys::Info::Constants qw( USER_REAL_NAME_FIELD );
 use Sys::Info::Driver::BSD;
-
-$VERSION = '0.70';
 
 my %OSVERSION;
 

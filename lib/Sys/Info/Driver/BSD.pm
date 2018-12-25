@@ -1,13 +1,13 @@
 package Sys::Info::Driver::BSD;
+
 use strict;
 use warnings;
-use vars qw( $VERSION @ISA @EXPORT );
+
 use BSD::Sysctl qw( sysctl sysctl_exists );
 use base qw( Exporter   Sys::Info::Base );
 use Carp qw( croak );
 
-$VERSION = '0.7801';
-@EXPORT  = qw( fsysctl nsysctl dmesg );
+our @EXPORT  = qw( fsysctl nsysctl dmesg );
 
 sub fsysctl {
     my $key = shift || croak 'Key is missing';
