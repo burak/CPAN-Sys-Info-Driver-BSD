@@ -13,7 +13,7 @@ Sys::Info::Driver::BSD::Device - Base class for BSD device drivers
 
 =head1 SYNOPSIS
 
-    use base qw( Sys::Info::Driver::BSD::Device );
+    use parent qw( Sys::Info::Driver::BSD::Device );
 
 =head1 DESCRIPTION
 

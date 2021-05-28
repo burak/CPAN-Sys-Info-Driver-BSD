@@ -2,7 +2,7 @@ package Sys::Info::Driver::BSD::Device::CPU;
 
 use strict;
 use warnings;
-use base qw(Sys::Info::Base);
+use parent qw(Sys::Info::Base);
 
 use Unix::Processors;
 use POSIX ();

@@ -2,7 +2,7 @@ package Sys::Info::Driver::BSD::OS;
 
 use strict;
 use warnings;
-use base qw( Sys::Info::Base );
+use parent qw( Sys::Info::Base );
 
 use POSIX ();
 use Cwd;

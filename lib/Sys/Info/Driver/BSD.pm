@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use BSD::Sysctl qw( sysctl sysctl_exists );
-use base qw( Exporter   Sys::Info::Base );
+use parent qw( Exporter   Sys::Info::Base );
 use Carp qw( croak );
 
 our @EXPORT  = qw( fsysctl nsysctl dmesg );
